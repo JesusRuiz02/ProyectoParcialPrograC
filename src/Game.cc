@@ -15,22 +15,24 @@ Player* player1{};
 GameObject* chest1{};
 GameObject* light1{};
 GameObject* Walls[6]{};
-GameObject* Walls2[3]{};
+GameObject* Walls2[5]{};
 GameObject* Walls3{};
-GameObject* Walls4[4]{};
+GameObject* Walls4[6]{};
 GameObject* Walls5[6]{};
 GameObject* Walls6[6]{};
 GameObject* Walls7[6]{};
-GameObject* Walls8[4]{};
-GameObject* Walls9[3]{};
-GameObject* Walls10[3]{};
+GameObject* Walls8[6]{};
+GameObject* Walls9[5]{};
+GameObject* Walls10[5]{};
 GameObject* Walls11[2]{};
+GameObject* Walls12[6]{};
+GameObject* Walls13[5]{};
 GameObject* chest2{};
 Enemy* enemy1{};
 Animation* idleAnimation{new Animation()};
 Animation* runAnimation{new Animation()};
 float x = 50, y=30;
-float x2=120, y2=170;
+float x2=110, y2=190;
 float x3=510, y3=300;
 
 
@@ -56,33 +58,30 @@ Game::Game()
   gameObjects = new std::vector<GameObject*>();
   gameObjectsDeleteList = new std::vector<GameObject*>();
 
-  player1 = new Player(ASSETS_SPRITES, 4.f, 16, 16, 0, 5, 500, 300, 200.f, b2BodyType::b2_dynamicBody, world, window);
+  player1 = new Player(ASSETS_SPRITES, 3.f, 16, 16, 0, 5, 500, 300, 200.f, b2BodyType::b2_dynamicBody, world, window);
   player1->SetTagName("Player");
-  chest1 = new GameObject(ASSETS_SPRITES, 4.f, 16, 16, 6, 1, 300, 500, b2BodyType::b2_staticBody, world, window);
+  chest1 = new GameObject(ASSETS_SPRITES, 3.f, 16, 16, 6, 1, 300, 500, b2BodyType::b2_staticBody, world, window);
   chest1->SetTagName("chest");
-  light1 = new GameObject(ASSETS_SPRITES, 4.f, 16, 16, 6, 3, 500, 500, b2BodyType::b2_staticBody, world, window);
+  light1 = new GameObject(ASSETS_SPRITES, 3.f, 16, 16, 6, 3, 110, 130, b2BodyType::b2_staticBody, world, window);
   light1->SetTagName("light");
-  enemy1 = new Enemy(ASSETS_SPRITES, 4.f, 16, 16, 0, 1, 400, 300, 200.f, b2BodyType::b2_dynamicBody, world, window);
+  enemy1 = new Enemy(ASSETS_SPRITES, 3.f, 16, 16, 0, 1, 400, 300, 200.f, b2BodyType::b2_dynamicBody, world, window);
   enemy1->SetTagName("Enemy");
-  chest2= new GameObject(ASSETS_SPRITES, 4.f, 16, 16, 6, 1, 120, 130, b2BodyType::b2_staticBody, world, window);
+  chest2= new GameObject(ASSETS_SPRITES, 3.f, 16, 16, 6, 1, 162, 130, b2BodyType::b2_staticBody, world, window);
   chest2->SetTagName("chest");
-  for (int i2 = 0; i2 < 3; i2++)
+  for (int i2 = 0; i2 < 5; i2++)
   {
-     Walls2[i2]= new GameObject(ASSETS_TILES, 4.f, 16, 1, 0, 0, x2, y2, b2BodyType::b2_staticBody, world, window);
+     Walls2[i2]= new GameObject(ASSETS_TILES, 1.f, 32, 32, 0, 0, x2, y2, b2BodyType::b2_staticBody, world, window);
      Walls2[i2]->SetTagName("wall");
-     Walls9[i2]= new GameObject(ASSETS_TILES, 4.f, 16, 1, 0, 0, x3, 247 , b2BodyType::b2_staticBody, world, window);
-     Walls10[i2]=new GameObject(ASSETS_TILES, 4.f, 16, 1, 0, 0, x3, 381 , b2BodyType::b2_staticBody, world, window);
-     x2=x2+67;
-     x3=x3+67;
+     Walls9[i2]= new GameObject(ASSETS_TILES, 1.f, 32, 32, 0, 0, x3, 297 , b2BodyType::b2_staticBody, world, window);
+     Walls10[i2]=new GameObject(ASSETS_TILES, 1.f, 32, 32, 0, 0, x3, 431 , b2BodyType::b2_staticBody, world, window);
+     Walls13[i2]=new GameObject(ASSETS_TILES, 1.f, 32, 32, 0, 0, x3, 565 , b2BodyType::b2_staticBody, world, window);
+     Walls10[i2]->SetTagName("wall");
+     Walls9[i2]->SetTagName("wall");
+     
+     x2=x2+32;
+     x3=x3+32;
   }
-  x2=120;
-  
-  Walls3= new GameObject(ASSETS_TILES, 4.f, 1, 16, 0, 0, 80, 130, b2BodyType::b2_staticBody, world, window);
-  Walls3->SetTagName("wall");
-  Walls11[0]= new GameObject(ASSETS_TILES, 4.f, 1, 16, 0, 0, 80, 337, b2BodyType::b2_staticBody, world, window);
-  Walls11[1]= new GameObject(ASSETS_TILES, 4.f, 1, 16, 0, 0, 80, 277, b2BodyType::b2_staticBody, world, window);
-  Walls11[0]->SetTagName("wall");
-  Walls11[1]->SetTagName("wall");
+  x2=110;
    for (int i = 0; i < 6; i++)
   {
     Walls[i] = new GameObject(ASSETS_TILES, 4.f, 32, 32, 0, 0, x, y, b2BodyType::b2_staticBody, world, window);
@@ -90,14 +89,16 @@ Game::Game()
     x=x+135;
   }
   x=760;
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 6; i++)
   {
-   Walls4[i]= new GameObject(ASSETS_TILES, 4.f, 16, 1, 0, 0, x2, 247 , b2BodyType::b2_staticBody, world, window);
+   Walls4[i]= new GameObject(ASSETS_TILES, 1.f, 32, 32, 0, 0, x2, 297 , b2BodyType::b2_staticBody, world, window);
    Walls4[i]->SetTagName("wall");
-   Walls8[i]= new GameObject(ASSETS_TILES, 4.f, 16, 1, 0, 0, x2, 381 , b2BodyType::b2_staticBody, world, window);
+   Walls8[i]= new GameObject(ASSETS_TILES, 1.f, 32, 32, 0, 0, x2, 431 , b2BodyType::b2_staticBody, world, window);
    Walls8[i]->SetTagName("wall");
+   Walls12[i]=new GameObject(ASSETS_TILES, 1.f, 32, 32, 0, 0, x2, 565, b2BodyType::b2_staticBody, world, window);
+   Walls12[i]->SetTagName("wall");
   
-   x2=x2+67;
+   x2=x2+32;
 
   }
   y2=160;
@@ -110,6 +111,7 @@ Game::Game()
      Walls6[i]= new GameObject(ASSETS_TILES, 4.f, 1, 32, 0, 0, 0, y2, b2BodyType::b2_staticBody, world, window);
      Walls6[i]->SetTagName("wall");
      Walls7[i]= new GameObject(ASSETS_TILES, 4.f, 32, 32, 0, 0, x2, 700, b2BodyType::b2_staticBody, world, window);
+     Walls7[i]->SetTagName("wall");
      y=y+130;
      y2=y2+130;
      x2=x2+130;
@@ -145,27 +147,30 @@ void Game::Start()
   AddGameObject(player1);
   AddGameObject(chest1);
   AddGameObject(light1);
-  AddGameObject(Walls11[0]);
-  AddGameObject(Walls11[1]);
+ 
   for (int i = 0; i <6; i++)
   {
     AddGameObject(Walls[i]);
     AddGameObject(Walls5[i]);
     AddGameObject(Walls6[i]);
     AddGameObject(Walls7[i]);
-  }
-  for (int i2 = 0; i2 < 3; i2++)
-  {
-    AddGameObject(Walls2[i2]);
-  }
-  for (int i = 0; i < 4; i++)
-  {
     AddGameObject(Walls4[i]);
+    AddGameObject(Walls8[i]);
+    AddGameObject(Walls12[i]);
   }
+  
  
+ 
+  for (int i = 0; i < 5; i++)
+  {
+    AddGameObject(Walls9[i]);
+    AddGameObject(Walls2[i]);
+    AddGameObject(Walls10[i]);
+    AddGameObject(Walls13[i]);
+  }
   
   
-  AddGameObject(Walls3);
+ 
   
   AddGameObject(chest2);
   AddGameObject(enemy1);
@@ -266,7 +271,7 @@ void Game::Draw()
   }
 
   window->draw(*textObj1->GetText());
-  world->DebugDraw();
+  //world->DebugDraw();
 }
 
 //Keyboard, joysticks, etc.
