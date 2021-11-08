@@ -22,7 +22,7 @@ void Enemy::Update(float& deltaTime)
 {
   GameObject::Update(deltaTime);
   Move();
-  std::cout<<"Funcionaa";
+ 
 }
 
 void Enemy::Draw()
