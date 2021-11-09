@@ -24,7 +24,7 @@ void ContactEventManager::BeginContact(b2Contact* contact)
     {
       gameObjectsDeleteList->push_back(actorB);
     }
-    if (actorB->GetTagName().compare("enemy")==0)
+    if (actorB->GetTagName().compare("Enemy")==0)
     {
       gameObjectsDeleteList->push_back(actorA);
      }
