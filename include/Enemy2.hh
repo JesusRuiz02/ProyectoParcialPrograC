@@ -6,7 +6,7 @@
 #include "GameObject.hh"
 #include "AnimationSystem.hh"
 
-class Enemy : public GameObject
+class Enemy2 : public GameObject
 {
 private:
   float enemySpeed{};
@@ -19,9 +19,9 @@ private:
   AnimationSystem* animationSystem{};
 
 public:
-  Enemy(std::string textureUrl, float scale, int width, int height, int column, int row, float posX, float posY, float enemySpeed,
+  Enemy2(std::string textureUrl, float scale, int width, int height, int column, int row, float posX, float posY, float enemySpeed,
   b2BodyType bodyType, b2World*& world, sf::RenderWindow*& window, float maxTime, sf::Vector2f direction);
-  ~Enemy();
+  ~Enemy2();
   sf::Sprite* GetSprite() const;
 
   void Update(float& deltaTime) override;

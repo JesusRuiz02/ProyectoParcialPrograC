@@ -1,13 +1,14 @@
-#include "CommonHeaders.hh"
 #include "Player.hh"
-#include "Animation.hh"
 #include "TileGroup.hh"
 #include "Enemy.hh"
-
+#include "Enemy2.hh"
+#include "ContactEventManager.hh"
+#include "CommonHeaders.hh"
 
 sf::CircleShape* circle{new sf::CircleShape()};
 
 TextObject* textObj1{new TextObject(ASSETS_FONT_ARCADECLASSIC, 14, sf::Color::White, sf::Text::Bold)};
+
 
 sf::Clock* gameClock{new sf::Clock()};
 float deltaTime{};
@@ -29,10 +30,14 @@ GameObject* Walls12[6]{};
 GameObject* Walls13[5]{};
 GameObject* chest2{};
 GameObject* light2{};
+Enemy* MiniEnemy{};
 GameObject* Sword{};
 GameObject* Decoration{};
 GameObject* chest3{};
+Enemy* enemy2{};
 Enemy* enemy1{};
+Enemy* enemy3{};
+Enemy* enemy4{};
 Animation* idleAnimation{new Animation()};
 Animation* runAnimation{new Animation()};
 float x = 50, y=30;
@@ -50,19 +55,17 @@ uint32 flags{};
     //flags += b2Draw::e_pairBit;
     //flags += b2Draw::e_jointBit;
 
-Animation* lightIdle{};
-Animation* light2Idle{};
-
 Game::Game()
 {
   window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_NAME);
   event = new sf::Event();
-  gravity = new b2Vec2(0.f, 20.f);
+  gravity = new b2Vec2(0.f, 0.f);
   world = new b2World(*gravity);
   drawPhysics = new DrawPhysics(window);
   gameObjects = new std::vector<GameObject*>();
   gameObjectsDeleteList = new std::vector<GameObject*>();
-
+  MiniEnemy = new Enemy(ASSETS_SPRITES, 3.f, 16, 16, 0, 5, 400, 350,100.f, b2BodyType::b2_dynamicBody, world, window, 2.f,sf::Vector2f(1,1));
+  MiniEnemy->SetTagName("enemy");
   player1 = new Player(ASSETS_SPRITES, 3.f, 16, 16, 0, 5, 90, 110, 200.f, b2BodyType::b2_dynamicBody, world, window);
   player1->SetTagName("Player");
   chest1 = new GameObject(ASSETS_SPRITES, 3.f, 16, 16, 6, 1, 400, 600, b2BodyType::b2_staticBody, world, window);
@@ -71,15 +74,22 @@ Game::Game()
   light1->SetTagName("light");
   light2 = new GameObject(ASSETS_SPRITES, 3.f, 16, 16, 6, 3, 110, 250, b2BodyType::b2_staticBody, world, window);
   light2->SetTagName("light");
-  enemy1 = new Enemy(ASSETS_SPRITES, 3.f, 16, 16, 0, 1, 700, 650, 200.f, b2BodyType::b2_dynamicBody, world, window);
-  enemy1->SetTagName("Enemy");
+  enemy1 = new Enemy(ASSETS_SPRITES, 3.f, 16, 16, 0, 1, 500, 200, 200.f, b2BodyType::b2_dynamicBody, world, window,2.f,sf::Vector2f(0,-1));
+  enemy1->SetTagName("enemy");
+  enemy4 = new Enemy(ASSETS_SPRITES, 3.f, 16, 16, 0, 1, 600, 380, 200.f, b2BodyType::b2_dynamicBody, world, window,1.f,sf::Vector2f(-1,0));
+  enemy4->SetTagName("enemy");
+  enemy3 = new Enemy(ASSETS_SPRITES, 3.f, 16, 16, 0, 1, 90, 380, 200.f, b2BodyType::b2_dynamicBody, world, window,1.f,sf::Vector2f(1,0));
+  enemy3->SetTagName("enemy");
+  enemy2 = new Enemy(ASSETS_SPRITES, 3.f, 16, 16, 0, 1, 380, 500, 200.f, b2BodyType::b2_dynamicBody, world, window,3.f,sf::Vector2f(-1,0));
+  enemy2->SetTagName("enemy");
   chest2= new GameObject(ASSETS_SPRITES, 3.f, 16, 16, 6, 1, 162, 130, b2BodyType::b2_staticBody, world, window);
   chest2->SetTagName("chest");
   Sword = new GameObject(ASSETS_TILES, 4, 16, 16, 1, 3, 700, 130,b2BodyType::b2_staticBody,world, window);
   Sword->SetTagName("Decoration");
   chest3= new GameObject(ASSETS_SPRITES, 3.f, 16, 16, 6, 1, 700, 300, b2BodyType::b2_staticBody, world, window);
   chest3->SetTagName("chest");
-  Decoration = new GameObject(ASSETS_TILES, 3.f, 16, 16, 2, 4, 400, 350, b2BodyType::b2_staticBody, world, window);
+
+  Decoration = new GameObject(ASSETS_TILES, 3.f, 16, 16, 2, 4, 20, 640, b2BodyType::b2_staticBody, world, window);
   Decoration->SetTagName("Decoration");
 
   for (int i2 = 0; i2 < 5; i2++)
@@ -142,15 +152,13 @@ Game::Game()
   contactEventManager = new ContactEventManager(gameObjects, gameObjectsDeleteList);
 
 
-  lightIdle = new Animation(light1->GetSprite(), 6, 11, 0.1f, 3);
-  light2Idle = new Animation(light2->GetSprite(), 6, 11, 0.1f, 3);
+
  
-  
+ 
 }
 
 Game::~Game()
 {
-  
 }
 
 //Starting things
@@ -160,7 +168,8 @@ void Game::Start()
   world->SetDebugDraw(drawPhysics);
   drawPhysics->SetFlags(flags);
   world->SetContactListener(contactEventManager);
-
+  AddGameObject(enemy3);
+  AddGameObject(enemy4);
   AddGameObject(player1);
   AddGameObject(chest1);
   AddGameObject(light1);
@@ -168,7 +177,7 @@ void Game::Start()
   AddGameObject(Sword);
   AddGameObject(Decoration);
   AddGameObject(chest3);
- 
+  AddGameObject(enemy2);
   for (int i = 0; i <6; i++)
   {
     AddGameObject(Walls[i]);
@@ -195,11 +204,11 @@ void Game::Start()
   
   AddGameObject(chest2);
   AddGameObject(enemy1);
-  
+  AddGameObject(MiniEnemy);
 
   textObj1->SetTextStr("My game");
-  idleAnimation = new Animation(player1->GetSprite(), 0, 5, 0.05f, 5);
-  runAnimation = new Animation(player1->GetSprite(), 0, 5, 0.08f, 6);
+
+  
 
   /*circle->setRadius(2.f);
   circle->setFillColor(sf::Color::Green);
@@ -228,23 +237,24 @@ void Game::Update()
   {
     gameObject->Update(deltaTime);
   }
+  //  if (==true)
+  //{
+  // window->draw(*TextGameOver->GetText());
+ // }
 
   //circle->setPosition(player1->GetSprite()->getPosition());
 
- lightIdle->Play(deltaTime);
- light2Idle->Play(deltaTime);
+  //lightIdle->Play(deltaTime);
 
-  if(std::abs(InputSystem::Axis().x) > 0 || std::abs(InputSystem::Axis().y) > 0)
+  /*if(std::abs(InputSystem::Axis().x) > 0 || std::abs(InputSystem::Axis().y) > 0)
   {
     runAnimation->Play(deltaTime);
   }
   else
   {
     idleAnimation->Play(deltaTime);
-  }
+  }*/
 }
-
-
 
 void Game::MainLoop()
 {
@@ -287,12 +297,13 @@ void Game::Draw()
   //window->draw(*circle);
 
   tileGroup->Draw();
-  //tile1->Draw();
 
   for(auto &gameObject : *gameObjects)
   {
     gameObject->Draw();
   }
+  
+  
 
   window->draw(*textObj1->GetText());
   //world->DebugDraw();
@@ -301,8 +312,6 @@ void Game::Draw()
 //Keyboard, joysticks, etc.
 void Game::Input()
 {
-  //player1->Move();
-  enemy1->Move();
 }
 
 void Game::Destroy()

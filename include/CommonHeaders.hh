@@ -1,7 +1,7 @@
+#pragma once
 #include "Game.hh"
 #include "Constants.hh"
 #include "InputSystem.hh"
-#include "Enemy.hh"
 #include "Animation.hh"
 #include "TextObject.hh"
 #include "Rigidbody.hh"
